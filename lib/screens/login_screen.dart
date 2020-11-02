@@ -11,6 +11,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String email;
+  String password;
+  final _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +36,9 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 48.0,
             ),
             TextField(
-              onChanged: (value) {},
+              onChanged: (value) {
+                email = value;
+              },
               keyboardType: TextInputType.emailAddress,
               decoration:
                   kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
@@ -42,7 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 8.0,
             ),
             TextField(
-              onChanged: (value) {},
+              onChanged: (value) {
+                password = value;
+              },
               decoration: kTextFieldDecoration.copyWith(
                   hintText: 'Enter your password'),
               textAlign: TextAlign.center,
@@ -54,7 +62,16 @@ class _LoginScreenState extends State<LoginScreen> {
             RoundedButton(
               title: 'Log In',
               color: Colors.lightBlueAccent,
-              onPressed: () {},
+              onPressed: () async{
+                try{
+                  final user = await _auth.signInWithEmailAndPassword(email: email, password: password);
+                  if(user != null){
+                    Navigator.pushNamed(context, ChatScreen.id);
+                  }
+                }catch(e){
+                  print(e);
+                }
+              },
             ),
           ],
         ),

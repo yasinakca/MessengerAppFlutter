@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "796472842817",
+    "firebase_url": "https://flashchat-bab7b.firebaseio.com",
+    "project_id": "flashchat-bab7b",
+    "storage_bucket": "flashchat-bab7b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796472842817:android:7aae68a207a941d31b84c0",
+        "android_client_info": {
+          "package_name": "com.yasinakca.flash_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796472842817-kqcmgm3bes1f6siov23fpra2jkk3e92i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwfO0v4L_lT1Gzz7Zu2QhBieC-WuTl9Bk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796472842817-kqcmgm3bes1f6siov23fpra2jkk3e92i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

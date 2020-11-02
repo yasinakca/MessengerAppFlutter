@@ -11,6 +11,7 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
+  Animation animation;
 
   @override
   void initState() {
@@ -18,16 +19,38 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     super.initState();
     controller =
         AnimationController(duration: Duration(seconds: 1), vsync: this);
+    animation = CurvedAnimation(
+      parent: controller,
+      curve: Curves.easeInCubic
+    );
     controller.forward();
+
     controller.addListener(() {
       setState(() {});
+      print(animation.value);
     });
+
+    animation.addStatusListener((status) {
+      if(status == AnimationStatus.completed){
+        controller.reverse(from: 1.0);
+      }else if(status == AnimationStatus.dismissed){
+        controller.forward();
+      }
+    });
+  }
+
+  //triggers when state of this page changes
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.cyan.withOpacity(controller.value),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -36,18 +59,24 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           children: <Widget>[
             Row(
               children: <Widget>[
-                Hero(
-                  tag: 'logo',
-                  child: Container(
-                    child: Image.asset('images/logo.png'),
-                    height: 60.0,
+                Expanded(
+                  flex: 1,
+                  child: Hero(
+                    tag: 'logo',
+                    child: Container(
+                      child: Image.asset('images/logo.png'),
+                      height: animation.value * 100,
+                    ),
                   ),
                 ),
-                Text(
-                  'Flash Chat',
-                  style: TextStyle(
-                    fontSize: 45.0,
-                    fontWeight: FontWeight.w900,
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    'Flash Chat',
+                    style: TextStyle(
+                      fontSize: 45.0,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
               ],

@@ -9,13 +9,13 @@ class ChatScreen extends StatefulWidget {
   _ChatScreenState createState() => _ChatScreenState();
 }
 
+User loggedInUser;
+
 class _ChatScreenState extends State<ChatScreen> {
   String messageText;
 
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
-  User loggedInUser;
-
   final messageTextController = TextEditingController();
 
   void getUser() async {
@@ -53,8 +53,14 @@ class _ChatScreenState extends State<ChatScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.close),
-            onPressed: () {
+            onPressed: () async {
               //Implement logout functionality
+              try {
+                await _auth.signOut();
+                Navigator.pop(context);
+              } catch (e) {
+                print(e);
+              }
             },
           ),
         ],
@@ -87,7 +93,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     onPressed: () {
                       messageTextController.clear();
                       _firestore.collection('messages').add(
-                          {'text': messageText, 'sender': loggedInUser.email});
+                          {'text': messageText, 'sender': loggedInUser.email, 'timestamp' : FieldValue.serverTimestamp()});
                     },
                     child: Text(
                       'Send',
@@ -108,14 +114,15 @@ class MessageStream extends StatelessWidget {
   const MessageStream({
     Key key,
     @required FirebaseFirestore firestore,
-  }) : _firestore = firestore, super(key: key);
+  })  : _firestore = firestore,
+        super(key: key);
 
   final FirebaseFirestore _firestore;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _firestore.collection('messages').snapshots(),
+      stream: _firestore.collection('messages').orderBy('timestamp',descending: true).snapshots(),
       builder: (context, snapshot) {
         return (!snapshot.hasData)
             ? Center(
@@ -123,11 +130,14 @@ class MessageStream extends StatelessWidget {
               )
             : Expanded(
                 child: ListView.builder(
+                  reverse: true,
                   itemCount: snapshot.data.docs.length,
                   itemBuilder: (context, index) {
-                    var messages = snapshot.data.docs[index];
+                    var messages = snapshot.data.docs[index]  ;
                     final messageText = messages['text'];
                     final messageSender = messages['sender'];
+
+                    final currentUser = loggedInUser.email;
                     return Container(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
@@ -135,6 +145,7 @@ class MessageStream extends StatelessWidget {
                         child: MessageBubble(
                           text: messageText,
                           sender: messageSender,
+                          isMe: currentUser == messageSender,
                         ),
                       ),
                     );
@@ -149,12 +160,14 @@ class MessageStream extends StatelessWidget {
 class MessageBubble extends StatelessWidget {
   final text;
   final sender;
-  MessageBubble({this.text, this.sender});
+  final bool isMe;
+  MessageBubble({this.text, this.sender, this.isMe});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment:
+          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Text(
           sender,
@@ -162,13 +175,34 @@ class MessageBubble extends StatelessWidget {
         ),
         Material(
           elevation: 4.0,
-          borderRadius: BorderRadius.circular(30.0),
-          color: Colors.lightBlue,
+          borderRadius: isMe
+              ? BorderRadius.only(
+                  topLeft: Radius.circular(
+                    30.0,
+                  ),
+                  bottomLeft: Radius.circular(
+                    30.0,
+                  ),
+                  bottomRight: Radius.circular(
+                    30.0,
+                  ),
+                )
+              : BorderRadius.only(
+                  topRight: Radius.circular(30.0),
+                  bottomLeft: Radius.circular(
+                    30.0,
+                  ),
+                  bottomRight: Radius.circular(
+                    30.0,
+                  ),
+                ),
+          color: isMe ? Colors.lightBlue : Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
               '$text',
-              style: TextStyle(color: Colors.white, fontSize: 15.0),
+              style: TextStyle(
+                  color: isMe ? Colors.white : Colors.black, fontSize: 15.0),
             ),
           ),
         ),

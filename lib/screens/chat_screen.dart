@@ -28,9 +28,9 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  void messageStream() async{
-    await for(var snapshot in _firestore.collection("messages").snapshots()){
-      for(var message in snapshot.docs){
+  void messageStream() async {
+    await for (var snapshot in _firestore.collection("messages").snapshots()) {
+      for (var message in snapshot.docs) {
         print(message.data());
       }
     }
@@ -66,6 +66,25 @@ class _ChatScreenState extends State<ChatScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
+              child: StreamBuilder(
+                stream: _firestore.collection('messages').snapshots(),
+                builder: (context, snapshot) {
+                  return (!snapshot.hasData)
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Expanded(
+                        child: ListView.builder(itemCount: snapshot.data.docs.length,itemBuilder: (context,index) {
+                          var messages = snapshot.data.docs[index];
+                          final messageText = messages['text'];
+                          final messageSender = messages['sender'];
+                          return Center(child: Container(child: Text('$messageText by $messageSender'),));
+                  }),
+                      );
+                },
+              ),
+            ),
+            Container(
               decoration: kMessageContainerDecoration,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,10 +99,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      _firestore.collection('messages').add({
-                        'text' : messageText,
-                        'sender' : loggedInUser.email
-                      });
+                      _firestore.collection('messages').add(
+                          {'text': messageText, 'sender': loggedInUser.email});
                     },
                     child: Text(
                       'Send',
@@ -99,3 +116,25 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
+
+// builder: (context, snapshot) {
+// if (!snapshot.hasData) {
+// return Center(
+// child: CircularProgressIndicator(),
+// );
+// } else {
+// final messages = snapshot.data.docs;
+// List<Text> messagesWidgets = [];
+// for (var message in messages) {
+// final messageText = message['text'];
+// final messageSender = message['sender'];
+//
+// final messageWidget =
+// Text('$messageText from $messageSender');
+// messagesWidgets.add(messageWidget);
+// }
+// return Column(
+// children: messagesWidgets,
+// );
+// }
+// },

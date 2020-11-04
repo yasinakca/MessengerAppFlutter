@@ -27,7 +27,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       setState(() {});
     });
 
-    animation = ColorTween(begin: Colors.cyan, end: Colors.blueGrey)
+    animation = ColorTween(begin: Colors.cyan, end: Colors.cyan.shade900)
         .animate(controller);
   }
 
@@ -56,7 +56,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   child: Hero(
                     tag: 'logo',
                     child: Container(
-                      child: Image.asset('images/logo.png'),
+                      child: Image.asset('images/wp.png'),
                       height: 60.0,
                     ),
                   ),
@@ -64,7 +64,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 Expanded(
                   flex: 3,
                   child: TypewriterAnimatedTextKit(
-                    text: ['Flash Chat'],
+                    text: ['Whatsapp Clone'],
                     textStyle: TextStyle(
                       fontSize: 45.0,
                       fontWeight: FontWeight.w900,
@@ -80,12 +80,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             ),
             RoundedButton(
               title: 'Log In',
-              color: Colors.lightBlueAccent,
+              color: Colors.lightGreen,
               onPressed: () => Navigator.pushNamed(context, LoginScreen.id),
             ),
             RoundedButton(
               title: 'Register',
-              color: Colors.blueAccent,
+              color: Colors.greenAccent,
               onPressed: () =>
                   Navigator.pushNamed(context, RegistrationScreen.id),
             ),

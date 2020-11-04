@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   tag: 'logo',
                   child: Container(
                     height: 200.0,
-                    child: Image.asset('images/logo.png'),
+                    child: Image.asset('images/wp.png'),
                   ),
                 ),
               ),
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               RoundedButton(
                 title: 'Log In',
-                color: Colors.lightBlueAccent,
+                color: Colors.green,
                 onPressed: () async{
                   setState(() {
                     spinnerState = true;

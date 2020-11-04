@@ -64,8 +64,8 @@ class _ChatScreenState extends State<ChatScreen> {
             },
           ),
         ],
-        title: Text('⚡️Chat'),
-        backgroundColor: Colors.lightBlueAccent,
+        title: Text('️Messages'),
+        backgroundColor: Colors.green,
       ),
       body: SafeArea(
         child: Column(
@@ -196,7 +196,7 @@ class MessageBubble extends StatelessWidget {
                     30.0,
                   ),
                 ),
-          color: isMe ? Colors.lightBlue : Colors.white,
+          color: isMe ? Colors.lightGreen : Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
